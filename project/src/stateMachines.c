@@ -65,19 +65,19 @@ char toggle_red50()
   static char statef = 0;
   switch (statef){
   case 0:
-    red_on = 0;
+    red_on = 1;
     statef = 1;
     break; 
   case 1:
-    red_on = 0;
+    red_on = 1;
     statef = 2;
     break; 
   case 2:
-    red_on = 1;
+    red_on = 0;
     statef = 3;
     break; 
   case 3:
-    red_on = 1;
+    red_on = 0;
     statef = 0;
     break;
   }
@@ -91,7 +91,7 @@ char toggle_red75()
   static char states =0;
   switch (states){
   case 0:
-    red_on = 0;
+    red_on = 1;
     states = 1;
     break; 
   case 1:
@@ -103,7 +103,7 @@ char toggle_red75()
     states = 3;
     break; 
   case 3:
-    red_on = 1;
+    red_on = 0;
     states = 0;
     break;
   }
@@ -117,34 +117,47 @@ void transition_advance()
   static char blink_count=0;
   // play buzzer through here
     if(++blink_count==250){
-      //call state advance which will turn on an LED
+      //call state advance which will turn on an LED in sync with music notes
       switch(sb){
       case 0:
-	buzzer_set_period(2000000/220);
+	// C
+	buzzer_set_period(2000000/277);
 	sb++;
         state_advance();       
 	break;
       case 1:
-	buzzer_set_period(2000000/400);
+	//E
+	buzzer_set_period(2000000/330); ;
 	sb++;
 	state_advance(); 
 	break; 
       case 2:
-	buzzer_set_period(2000000/200);
+	// G-B
+	buzzer_set_period(2000000/415);
+	buzzer_set_period(2000000/246); 
 	sb++;
 	state_advance(); 
 	break;
       case 3:
-	buzzer_set_period(2000000/320);
+	//D
+	buzzer_set_period(2000000/293);
 	sb++;
 	state_advance(); 
 	break;
-      case 4: 
-	buzzer_set_period(2000000/240);
+      case 4:
+	//F
+	buzzer_set_period(2000000/349);
 	sb++;
 	state_advance(); 
 	break;
+      case 5:
+	//A-C
+	buzzer_set_period(2000000/220);
+	buzzer_set_period(2000000/261);
+	sb++;
+	state_advance(); 
       default:
+	//turn off buzzer
 	buzzer_set_period(0);
 	state_advance();
 	break; 
@@ -166,40 +179,50 @@ void state_advance()		/* alternate between toggling red & green */
     blink_count =0; 
     while(++blink_count != 62){
     changed = toggle_red25();
-    }
+    } 
     transition++;
-    break; 
+    break;
+
   case 1:
+    blink_count = 0;
+    red_on = 0;
+    led_changed = 1;
+    led_update();
+    transition++; 
+    break; 
+  case 2:
     blink_count =0; 
     while(++blink_count != 62){
       changed = toggle_red75(); 
     }
     transition++; 
     break;
-  case 2:
-    blink_count = 0; 
-    while (++blink_count != 62){
-    changed = toggle_red25();
-    }
-    transition++;
-    break; 
+    
   case 3:
     blink_count = 0; 
+    changed = toggle_green();
+    red_on = 0;
+    led_changed = 1;
+    led_update(); 
+    transition++;
+    break; 
+  case 4:
+    blink_count = 0; 
     while(++blink_count!= 62){
-    changed =  toggle_red25(); 
+    changed =  toggle_red50(); 
     }
     transition++;
     break;
   default:
-    //turn off
+    //turn off both LEDS 
+    transition++; 
     red_on = 0;
     green_on =0; 
-    changed = 1; 
+    led_changed = 1;
+    led_update(); 
     break;
   }
-  blink_count = 0; 
-  //led_changed = changed;
-  //led_update(); 
+  blink_count = 0;  
 } 
 
 
