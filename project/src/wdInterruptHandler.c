@@ -4,9 +4,7 @@
 void
 __interrupt_vec(WDT_VECTOR) WDT(){	/* 250 interrupts/sec */
   static char blink_count = 0;
-  static char notes = 0; 
-  if (++blink_count %2 ==0) {
-    transition_advance();
-    blink_count = 0; 
-  }
+  static char count = 0;
+  transition_advance();
+  blink_count = 0; 
 }

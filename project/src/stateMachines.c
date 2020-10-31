@@ -1,9 +1,11 @@
+
 #include <msp430.h>
 #include "stateMachines.h"
 #include "led.h"
 #include "buzzer.h"
 
-static char transition = -1; 
+
+static char sb =0; 
 char toggle_red()		/* always toggle! */
 {
   static char state = 0;
@@ -102,43 +104,79 @@ char toggle_red75()
   }
   return 1;
 }
-
 void transition_advance()
 {
-  int i;
-  for (i =0; i != 251; i++){
-    if(i==250){
-      transition++;
-      state_advance();
+  static char blink_count=0;
+  // play buzzer through here
+    if(++blink_count==250){
+      //call state advance which will turn on an LED
+      switch(sb){
+      case 0:
+	buzzer_set_period(2000000/220);
+	sb++;
+	state_advance(); 
+	break;
+      case 1:
+	buzzer_set_period(2000000/400);
+	sb++;
+	state_advance(); 
+	break; 
+      case 2:
+	buzzer_set_period(2000000/200);
+	sb++;
+	state_advance(); 
+	break;
+      case 3:
+	buzzer_set_period(2000000/320);
+	sb++;
+	state_advance(); 
+	break;
+      case 4: 
+	buzzer_set_period(2000000/240);
+	sb++;
+	state_advance(); 
+	break;
+      default:
+	buzzer_set_period(0);
+	state_advance();
+	break; 
+      }
+      blink_count = 0;
     }
-  }
 }
 
 
 
 void state_advance()		/* alternate between toggling red & green */
 {
-  char changed = 0;  
+  char changed = 0;
+  static char transition = 0; 
 
   switch(transition){
   case 0:
-    changed=toggle_red25();
-    buzzer_set_period(2000000/147); 
+    led_changed=toggle_red25();
+    led_update(); 
+    transition++; 
     break;
   case 1:
-    changed = toggle_red75();
+    led_changed = toggle_red75();
+    led_update(); 
+    transition++; 
     break;
   case 2:
     changed = toggle_green();
+    transition++; 
     break;
   case 3:
     changed = toggle_red50();
+    transition++; 
     break;
   default:
+    //turn off
+    red_on = 0;
+    changed = 1; 
     break;
   }
-  led_changed = changed;
-  led_update();
 }
 
 
