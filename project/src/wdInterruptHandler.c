@@ -25,8 +25,8 @@ __interrupt_vec(WDT_VECTOR) WDT(){	/* 250 interrupts/sec */
   case 4:
     //automatically turn off both leds and buzzer
     buzzer_set_period(0);
-    red_on = 1;
-    green_on = 1;
+    red_on = 0;
+    green_on = 0;
     led_changed = 1;
     led_update();
     break; 

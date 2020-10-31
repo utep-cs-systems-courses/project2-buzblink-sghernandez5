@@ -116,57 +116,52 @@ char toggle_red75()
 void led_advance()		/* alternate between toggling red & green */
 {
   static char changed = 0;
-  static char blink_count = 0;
+  static char blink_count,count = 0;
   static char transition = 0;
+  static char cases = 0;
+  if(++count != 250){
   switch(transition){
-  case 0:
-    blink_count =0; 
-    while(++blink_count != 4){
-    changed = toggle_red25();
-    }
-    transition++;
+  case 0: 
+    led_changed = toggle_red25();
     break;
 
   case 1:
-    blink_count = 0;
     red_on = 0;
     led_changed = 1;
-    led_update();
-    transition++; 
+    led_update(); 
     break; 
   case 2:
-    blink_count =0; 
-    while(++blink_count != 4){
-      changed = toggle_red75(); 
-    }
-    transition++; 
+    led_changed = toggle_red75(); 
     break;
     
   case 3:
     blink_count = 0; 
-    changed = toggle_green();
+    led_changed = toggle_green();
     red_on = 0;
-    led_changed = 1;
-    led_update(); 
-    transition++;
+    led_update();
     break; 
   case 4:
-    blink_count = 0; 
-    while(++blink_count!= 4){
-    changed =  toggle_red50(); 
-    }
-    transition++;
+    changed =  toggle_red50();
     break;
   default:
-    //turn off both LEDS 
-    transition++; 
+    //turn off both LEDS  
     red_on = 0;
     green_on =0; 
     led_changed = 1;
     led_update(); 
     break;
   }
-  blink_count = 0;  
+  led_changed =1;
+  led_update();
+  }
+  else{
+    if(transition == 4){
+      transition = 0;
+      count = 0;
+    }
+    else{
+      transition++;}
+  }
 } 
 
 
@@ -214,6 +209,7 @@ void buzz_advance()
       default:
 	//turn off buzzer
 	buzzer_set_period(0);
+	sb=0;
 	break; 
       }
       blink_count = 0;
@@ -273,6 +269,7 @@ void transition_advance()
 	//turn off buzzer
 	buzzer_set_period(0);
 	state_advance();
+	sb=0; 
 	break; 
       }
       blink_count = 0;
@@ -328,7 +325,7 @@ void state_advance()		/* alternate between toggling red & green */
     break;
   default:
     //turn off both LEDS 
-    transition++; 
+    transition =0;  
     red_on = 0;
     green_on =0; 
     led_changed = 1;
