@@ -5,8 +5,9 @@
 #include "buzzer.h"
 
 
-static char sb =0; 
-char toggle_red()		/* always toggle! */
+
+char toggle_red()		/* always toggle!
+				 */
 {
   static char state = 0;
 
@@ -38,22 +39,24 @@ char toggle_red25()
   static char statep = 0;
   switch (statep){
   case 0:
-    red_on = 0;
+    red_on = 1;
     statep = 1;
-    break;
+    break; 
   case 1:
     red_on = 0;
     statep = 2;
-    break;
+    break; 
   case 2:
     red_on = 0;
     statep = 3;
-    break;
+    break; 
   case 3:
-    red_on = 1;
+    red_on = 0;
     statep = 0;
     break; 
   }
+  led_changed = 1;
+  led_update();
   return 1; 
 }
 
@@ -64,20 +67,22 @@ char toggle_red50()
   case 0:
     red_on = 0;
     statef = 1;
-    break;
+    break; 
   case 1:
     red_on = 0;
     statef = 2;
-    break;
+    break; 
   case 2:
     red_on = 1;
     statef = 3;
-    break;
+    break; 
   case 3:
     red_on = 1;
     statef = 0;
     break;
   }
+  led_changed = 1;
+  led_update(); 
   return 1; 
 }
 
@@ -88,24 +93,27 @@ char toggle_red75()
   case 0:
     red_on = 0;
     states = 1;
-    break;
+    break; 
   case 1:
     red_on = 1;
     states = 2;
-    break;
+    break; 
   case 2:
     red_on = 1;
     states = 3;
-    break;
+    break; 
   case 3:
     red_on = 1;
     states = 0;
     break;
   }
+  led_changed = 1;
+  led_update(); 
   return 1;
-}
+  }
 void transition_advance()
 {
+  static char sb = 0;
   static char blink_count=0;
   // play buzzer through here
     if(++blink_count==250){
@@ -114,7 +122,7 @@ void transition_advance()
       case 0:
 	buzzer_set_period(2000000/220);
 	sb++;
-	state_advance(); 
+        state_advance();       
 	break;
       case 1:
 	buzzer_set_period(2000000/400);
@@ -149,35 +157,51 @@ void transition_advance()
 
 void state_advance()		/* alternate between toggling red & green */
 {
-  char changed = 0;
-  static char transition = 0; 
-
+  static char changed = 0;
+  static char blink_count = 0;
+  static char transition = 0;
+  static char cases = 0; 
   switch(transition){
   case 0:
-    led_changed=toggle_red25();
-    led_update(); 
-    transition++; 
-    break;
+    blink_count =0; 
+    while(++blink_count != 62){
+    changed = toggle_red25();
+    }
+    transition++;
+    break; 
   case 1:
-    led_changed = toggle_red75();
-    led_update(); 
+    blink_count =0; 
+    while(++blink_count != 62){
+      changed = toggle_red75(); 
+    }
     transition++; 
     break;
   case 2:
-    changed = toggle_green();
-    transition++; 
-    break;
+    blink_count = 0; 
+    while (++blink_count != 62){
+    changed = toggle_red25();
+    }
+    transition++;
+    break; 
   case 3:
-    changed = toggle_red50();
-    transition++; 
+    blink_count = 0; 
+    while(++blink_count!= 62){
+    changed =  toggle_red25(); 
+    }
+    transition++;
     break;
   default:
     //turn off
     red_on = 0;
+    green_on =0; 
     changed = 1; 
     break;
   }
-}
+  blink_count = 0; 
+  //led_changed = changed;
+  //led_update(); 
+} 
+
 
 
 
