@@ -3,7 +3,15 @@ My project generates a song, and dynamically changes LEDS from dim requirement
 in the lab. The buttons are used to changed from states.The button state
 description is described below:
 
-##State Description
+
+
+## Lab Instructions
+To load code into MSP430. Connect the MSP430 to the vm, and enter make. Then
+you are ready to run and enter make load.
+
+
+
+##How to use MSP430 description
 
 Button S1: When pressed, leds transition from state state. Red leds transition
 from dimness. This is shown in my led_advance() method, the red LED goes from
