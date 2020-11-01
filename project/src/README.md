@@ -6,8 +6,8 @@ description is described below:
 
 
 ## Lab Instructions
-To load code into MSP430. Connect the MSP430 to the vm, and enter make. Then
-you are ready to run and enter make load.
+To load code into MSP430, connect the MSP430 to the vm, and enter make.
+Then you are ready to run and enter make load.
 
 
 
