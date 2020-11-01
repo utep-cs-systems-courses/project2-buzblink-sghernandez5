@@ -6,9 +6,7 @@
 
 void
 __interrupt_vec(WDT_VECTOR) WDT(){	/* 250 interrupts/sec */
-  static char blink_count = 0;
-  char count =250; 
-  if(++blink_count != 250){
+  // the switch staement will transition through buttons
   switch(buttonPressed){
   case 1:
     //turn on dim red leds with green
@@ -30,9 +28,7 @@ __interrupt_vec(WDT_VECTOR) WDT(){	/* 250 interrupts/sec */
     led_changed = 1;
     led_update();
     break; 
-  }
-  }
-  blink_count = 0; 
+  } 
 }
   
 

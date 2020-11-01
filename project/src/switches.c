@@ -39,7 +39,8 @@ switch_interrupt_handler()
   switch_state_down2 = (p2val & SW3)? 0: 1;
   
   switch_state_down3 = (p2val & SW4)? 0: 1;
-
+  //The conditional statements will let me change from button states based on what button is pressed
+  //buttonPressed will be used in the interrupt handler.
   if(switch_state_down0){
     buttonPressed = 1;
   }

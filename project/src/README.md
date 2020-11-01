@@ -1,26 +1,28 @@
-## Description
-This interrupt-driven program flashes the LEDs in a silly pattern.
+## Lab Description
+My project generates a song, and dynamically changes LEDS from dim requirement
+in the lab. The buttons are used to changed from states.The button state
+description is described below:
 
-## Exploration
+##State Description
 
-_Write some some code in Assembly Language_
+Button S1: When pressed, leds transition from state state. Red leds transition
+from dimness. This is shown in my led_advance() method, the red LED goes from
+25 to 75, to turning on the green LED and to red 50.This state will contine
+the transition of LEDS in a loop.
 
-Translate led.c to led_s.s, and modify the Makefile to reference it.  Remember
+Button S2: When pressed, will genereate a sound pattern. This is shown in my
+buzz_advance method. The sound pattern will repeat in a loop.
 
-* to put global and static vars in the data segment and instructions in the
-text segment using the .data and .text directives,
-* to make global symbols visible to other modules using .global, and
-* to import external symbols from other modules with .extern
+Button S3: When pressed, the LEDS and sound pattern are in sync. This is shown
+with my transition method and state_advance method. However, the more it
+repeats the more the LEDS get out of sync. The first two repeats the LEDS are
+in sync.
 
-_Changing speed:_ Figure out how to flash the lights faster or slower.  Determine if there's a speed where the lights don't appear to flash... but glow instead!
+Button S4:When pressed, both LEDS and buzzer are turn off. This is to cut off
+any loops from the pressed buttons from S1-S3.
 
-_Counting to three:_  Change the program to slowly and repeatedly
-count from zero to three, displaying the value in binary using the red
-& green lights. This is simpler than the program we provided.
 
-## Some Advice
-When creating your own variants to the demo programs,
-it's probably a good idea to keep a copy of the original program (or really understand how _git checkout_ works).  
+  
 
 
 

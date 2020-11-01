@@ -35,6 +35,7 @@ char toggle_green()	/* only toggle green if red is on!  */
   return changed;
 }
 
+//the method below is used to make the red LED dimness at 25%
 char toggle_red25()
 {
   static char statep = 0;
@@ -61,6 +62,8 @@ char toggle_red25()
   return 1; 
 }
 
+
+// the method below wil be used to make the red LED dimmness at 50%
 char toggle_red50()
 {
   static char statef = 0;
@@ -87,6 +90,7 @@ char toggle_red50()
   return 1; 
 }
 
+// the method below wil be used to make the red LED dimness at 75%
 char toggle_red75()
 {
   static char states =0;
@@ -112,13 +116,18 @@ char toggle_red75()
   led_update(); 
   return 1;
   }
-
-void led_advance()		/* alternate between toggling red & green */
+/* alternate between toggling red and green
+   red LED will differe in dimness based on the method calls
+   this method will be used for S1, button 1
+*/
+void led_advance()	      
 {
   static char changed = 0;
-  static char blink_count,count = 0;
+  static char count = 0;
   static char transition = 0;
   static char cases = 0;
+  /* the if statement will give enough time, 1 sec, to see the LED transition from different states
+  ex: toggle_red25(), wait 60 seconds, turn off red, wait 60 seconds toggle_red75()... */
   if(++count != 250){
   switch(transition){
   case 0: 
@@ -134,8 +143,7 @@ void led_advance()		/* alternate between toggling red & green */
     led_changed = toggle_red75(); 
     break;
     
-  case 3:
-    blink_count = 0; 
+  case 3: 
     led_changed = toggle_green();
     red_on = 0;
     led_update();
@@ -144,35 +152,36 @@ void led_advance()		/* alternate between toggling red & green */
     changed =  toggle_red50();
     break;
   default:
-    //turn off both LEDS  
+    //turn off both LEDS  at the end of the LED state transition 
     red_on = 0;
     green_on =0; 
     led_changed = 1;
     led_update(); 
     break;
   }
-  led_changed =1;
-  led_update();
   }
+  // go back to the beginning of the "loop" else increment the state transition to go through states
   else{
     if(transition == 4){
       transition = 0;
       count = 0;
-    }
+        }
     else{
-      transition++;}
-  }
+      transition++;
+    }
+  }  
 } 
 
-
-
+/*
+  The method below will be used for button 2 or S2, buzz_advance() will go generate a buzzer tune. 
+  The notes will transition from state to state. And the notes will be played for one second, by the the if statement. 
+ */
 void buzz_advance()
 {
   static char sb = 0;
   static char blink_count=0;
   // play buzzer through here
     if(++blink_count==250){
-      //call state advance which will turn on an LED in sync with music notes
       switch(sb){
       case 0:
 	// D4 and A3
@@ -207,7 +216,7 @@ void buzz_advance()
 	buzzer_set_period(2000000/587);
 	sb++; 
       default:
-	//turn off buzzer
+	//turn off buzzer at the end and repeat tune again
 	buzzer_set_period(0);
 	sb=0;
 	break; 
@@ -215,10 +224,10 @@ void buzz_advance()
       blink_count = 0;
     }
 }
-
-
-
-
+/*
+  The method below, transition advance wil be used for button3, this button will play the buzzer tune and the leds at the same time. 
+  Transition advance focuses on the buzzer and will play each note for one second,(not the double notes per case this will be very fast), and will call the state_advance metho to start the LED states. 
+ */
 void transition_advance()
 {
   static char sb = 0;
@@ -277,8 +286,9 @@ void transition_advance()
 }
 
 
-
-void state_advance()		/* alternate between toggling red & green */
+/*  The method below will be called by transition advance, this method focused on the LEDS. The red LED will transition in dimness based on the toggle method called and the green LED will be based on the toggle green method. 
+ */
+void state_advance()	  
 {
   static char changed = 0;
   static char blink_count = 0;
@@ -286,7 +296,8 @@ void state_advance()		/* alternate between toggling red & green */
   static char cases = 0; 
   switch(transition){
   case 0:
-    blink_count =0; 
+    blink_count =0;
+    /* to keep up with the note that is being played by the buzzer, and for the LED to have enough time to enable toggle red 25, i use a loop. So i can see the red LED dimmness. Without the loop, it happens so fast because it is based on the time of the buzzer.*/ 
     while(++blink_count != 62){
     changed = toggle_red25();
     } 
@@ -324,7 +335,7 @@ void state_advance()		/* alternate between toggling red & green */
     transition++;
     break;
   default:
-    //turn off both LEDS 
+    //turn off both LEDS and repeat state advance by setting transition to 0. 
     transition =0;  
     red_on = 0;
     green_on =0; 
