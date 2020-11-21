@@ -125,7 +125,6 @@ void led_advance()
   static char changed = 0;
   static char count = 0;
   static char transition = 0;
-  static char cases = 0;
   /* the if statement will give enough time, 1 sec, to see the LED transition from different states
   ex: toggle_red25(), wait 60 seconds, turn off red, wait 60 seconds toggle_red75()... */
   if(++count != 250){
@@ -293,34 +292,29 @@ void state_advance()
   static char changed = 0;
   static char blink_count = 0;
   static char transition = 0;
-  static char cases = 0; 
+  static char cases = 0;
+  if(++ blink_count != 250){
   switch(transition){
   case 0:
-    blink_count =0;
-    /* to keep up with the note that is being played by the buzzer, and for the LED to have enough time to enable toggle red 25, i use a loop. So i can see the red LED dimmness. Without the loop, it happens so fast because it is based on the time of the buzzer.*/ 
-    while(++blink_count != 62){
-    changed = toggle_red25();
-    } 
+    /* .*/ 
+    changed = toggle_red25(); 
     transition++;
     break;
 
   case 1:
-    blink_count = 0;
+    // blink_count = 0;
     red_on = 0;
     led_changed = 1;
     led_update();
     transition++; 
     break; 
   case 2:
-    blink_count =0; 
-    while(++blink_count != 62){
-      changed = toggle_red75(); 
-    }
+    changed = toggle_red75(); 
     transition++; 
     break;
     
   case 3:
-    blink_count = 0; 
+    //   blink_count = 0; 
     changed = toggle_green();
     red_on = 0;
     led_changed = 1;
@@ -328,10 +322,7 @@ void state_advance()
     transition++;
     break; 
   case 4:
-    blink_count = 0; 
-    while(++blink_count!= 62){
     changed =  toggle_red50(); 
-    }
     transition++;
     break;
   default:
@@ -343,7 +334,8 @@ void state_advance()
     led_update(); 
     break;
   }
-  blink_count = 0;  
+  blink_count = 0;
+  }
 } 
 
 
